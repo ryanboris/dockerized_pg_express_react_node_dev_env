@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  react:
+    container_name: reactapp
+    image: ryanboris/reactapp:latest
+    volumes:
+      - ./client:/client
+      - /client/node_modules
+    networks:
+      - reactappnetwork
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+
+  postgres:
+    image: postgres
+    environment:
+      - 'POSTGRES_PASSWORD=postgres'
+    networks:
+      - reactappnetwork
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  api:
+    container_name: expressapi
+    image: ryanboris/expressapi:latest
+    ports:
+      - '9000:9000'
+      - '5431:5432'
+    depends_on:
+      - postgres
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+    networks:
+      - reactappnetwork
+
+
+networks:
+  reactappnetwork:
+    driver: bridge
+
+volumes:
+  postgres:
