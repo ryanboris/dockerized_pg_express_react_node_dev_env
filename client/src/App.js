@@ -7,56 +7,47 @@ const App = () => {
   const [email, setEmail] = useState('');
   const [users, setUsers] = useState([]);
 
-  const handle = {
-    submit(e) {
-      e.preventDefault();
-      axios
-        .post(URL, { name, email })
-        .then(() => {
-          setName('');
-          setEmail('');
-        })
-        .catch(({ code, msg }) => console.error({ code, msg }));
-    },
-    change(e) {
-      const { value } = e.target;
-      return value === name ? setName(value) : setEmail(value);
-    }
-  };
+  async function getUsers() {
+    const users = await axios.get(URL);
+    setUsers(users.data);
+  }
 
   useEffect(() => {
-    axios
-      .get(URL)
-      .then(res => {
-        setUsers(res.data);
-      })
-      .catch(({ code, msg }) => console.error({ code, msg }));
+    getUsers();
   }, []);
 
   return (
     <div className="App">
       <h1>Holy crap it works!</h1>
-      <form onSubmit={handle.submit}>
+      <form
+        onSubmit={async e => {
+          e.preventDefault();
+          await axios.post(URL, { name, email });
+          getUsers();
+          setName('');
+          setEmail('');
+        }}
+      >
         <input
           type="text"
           placeholder="name"
           value={name}
-          onChange={handle.change}
+          onChange={e => setName(e.target.value)}
         />
         <input
           type="email"
           placeholder="email"
           value={email}
-          onChange={handle.change}
+          onChange={e => setEmail(e.target.value)}
         />
         <input type="submit" value="submit" />
       </form>
       <div className="user-list">
-        {users.map(({ id, name, email }) => {
+        {users.map(user => {
           return (
-            <div key={id}>
-              <div>{name}</div>
-              <div>{email}</div>
+            <div key={user.id}>
+              <div>{user.name}</div>
+              <div>{user.email}</div>
             </div>
           );
         })}
