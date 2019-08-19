@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import axios from 'axios';
 
 const App = () => {
@@ -18,7 +19,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Holy crap it works!</h1>
+      <h1>Hey!!</h1>
       <form
         onSubmit={async e => {
           e.preventDefault();
@@ -56,4 +57,5 @@ const App = () => {
   );
 };
 
-export default App;
+const mapStateToProps = state => ({ users: state });
+export default connect(mapStateToProps)(App);

@@ -4,6 +4,9 @@ services:
   react:
     container_name: reactapp
     image: ryanboris/reactapp:latest
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
     volumes:
       - ./client:/client
       - /client/node_modules
@@ -28,6 +31,9 @@ services:
   api:
     container_name: expressapi
     image: ryanboris/expressapi:latest
+    build:
+      context: .
+      dockerfile: ./api/Dockerfile
     ports:
       - '9000:9000'
       - '5431:5432'
